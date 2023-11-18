@@ -1,0 +1,8 @@
+dataSource:
+  driver: org.postgresql.Driver
+  url: jdbc:postgresql://localhost:5432/cache_task
+  username: postgres
+  password: root
+cache:
+  type: LRU
+  capacity: 3
