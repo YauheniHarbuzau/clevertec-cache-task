@@ -27,6 +27,26 @@ public class Constant {
             .buildValidatorFactory()
             .getValidator();
 
+    public static final String ID = "ID";
+    public static final String FIRST_NAME = "FIRST NAME";
+    public static final String LAST_NAME = "LAST NAME";
+    public static final String EMAIL = "EMAIL";
+    public static final String CREATE_DATE = "CREATE DATE";
+
+    public static final String PDF_TEMPLATE_PATH = "src/main/resources/pdftemplate/";
+    public static final String PDF_TEMPLATE_NAME = "Clevertec_Template.pdf";
+
+    public static final String PDF_PERSON_GET_BY_ID_PATH = "";
+    public static final String PDF_PERSON_GET_BY_ID_NAME = "person_get_by_id_%s.pdf";
+    public static final String PDF_PERSON_GET_BY_ID_HEAD = "\n\n\n\n\nPERSON - GET BY " + ID;
+
+    public static final String PDF_PERSON_GET_ALL_PATH = "";
+    public static final String PDF_PERSON_GET_ALL_NAME = "person_get_all_%s.pdf";
+    public static final String PDF_PERSON_GET_ALL_HEAD = "\n\n\n\n\nPERSONS - GET ALL";
+
+    public static final String PDF_FILE_NUMBER_PATTERN = "0000000000";
+    public static final String PDF_TEXT_SEPARATOR = "**********************************************************************\n";
+
     public static final String XML_PERSONS_FILE_PATH = "";
     public static final String XML_PERSONS_FILE_NAME = "persons-response-info.xml";
 }

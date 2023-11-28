@@ -17,6 +17,7 @@
 - Hibernate Validator 8.0.1.Final
 - SnakeYAML 2.0
 - Gson 2.10.1
+- iText 7.2.5
 - JDOM 2.0.6.1
 - JUnit 5.9.2
 - Mockito 5.6.0
@@ -36,6 +37,10 @@
 
 Реализована валидация данных на [контролере](src/main/java/ru/clevertec/controller/PersonController.java "PersonController.java")
 при выполнении метода сохранения.
+
+Предусмотрена генерация pdf-файлов при получении Пользователя по ID
+([см. пример](src/main/resources/pdfexample/person_get_by_id_example.pdf "person_get_by_id_example.pdf")) и
+получении всех Пользователей ([см. пример](src/main/resources/pdfexample/person_get_all_example.pdf "person_get_all_example.pdf")).
 
 ***
 

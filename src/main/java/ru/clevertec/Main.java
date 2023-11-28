@@ -3,7 +3,7 @@ package ru.clevertec;
 import ru.clevertec.controller.PersonController;
 
 /**
- * Main-класс
+ * Main-класс - точка входа в приложение
  */
 public class Main {
 

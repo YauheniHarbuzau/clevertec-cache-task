@@ -6,6 +6,7 @@ import ru.clevertec.controller.adapter.OffsetDateTimeAdapter;
 import ru.clevertec.service.PersonService;
 import ru.clevertec.service.dto.PersonDto;
 import ru.clevertec.service.impl.PersonServiceImpl;
+import ru.clevertec.service.proxy.PersonServiceProxy;
 import ru.clevertec.util.ValidationUtil;
 
 import java.time.OffsetDateTime;
@@ -19,7 +20,7 @@ public class PersonController {
     private final Gson gson;
 
     public PersonController() {
-        this.service = new PersonServiceImpl();
+        this.service = new PersonServiceProxy(new PersonServiceImpl());
         this.gson = new GsonBuilder()
                 .serializeNulls()
                 .registerTypeAdapter(OffsetDateTime.class, new OffsetDateTimeAdapter())
