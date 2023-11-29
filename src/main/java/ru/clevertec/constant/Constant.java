@@ -33,20 +33,28 @@ public class Constant {
     public static final String EMAIL = "EMAIL";
     public static final String CREATE_DATE = "CREATE DATE";
 
+    public static final String PDF_EXTENSION = ".pdf";
+    public static final String XML_EXTENSION = ".xml";
+
     public static final String PDF_TEMPLATE_PATH = "src/main/resources/pdftemplate/";
     public static final String PDF_TEMPLATE_NAME = "Clevertec_Template.pdf";
+    public static final String PDF_TEMPLATE = PDF_TEMPLATE_PATH + PDF_TEMPLATE_NAME;
 
     public static final String PDF_PERSON_GET_BY_ID_PATH = "";
-    public static final String PDF_PERSON_GET_BY_ID_NAME = "person_get_by_id_%s.pdf";
+    public static final String PDF_PERSON_GET_BY_ID_NAME = "person_get_by_id" + PDF_EXTENSION;
+    public static final String PDF_PERSON_GET_BY_ID = PDF_PERSON_GET_BY_ID_PATH + PDF_PERSON_GET_BY_ID_NAME;
     public static final String PDF_PERSON_GET_BY_ID_HEAD = "\n\n\n\n\nPERSON - GET BY " + ID;
 
     public static final String PDF_PERSON_GET_ALL_PATH = "";
-    public static final String PDF_PERSON_GET_ALL_NAME = "person_get_all_%s.pdf";
+    public static final String PDF_PERSON_GET_ALL_NAME = "person_get_all" + PDF_EXTENSION;
+    public static final String PDF_PERSON_GET_ALL = PDF_PERSON_GET_ALL_PATH + PDF_PERSON_GET_ALL_NAME;
     public static final String PDF_PERSON_GET_ALL_HEAD = "\n\n\n\n\nPERSONS - GET ALL";
 
     public static final String PDF_FILE_NUMBER_PATTERN = "0000000000";
+    public static final Long PDF_FILE_NUMBER_MAX = 9999999999L;
     public static final String PDF_TEXT_SEPARATOR = "**********************************************************************\n";
 
     public static final String XML_PERSONS_FILE_PATH = "";
-    public static final String XML_PERSONS_FILE_NAME = "persons-response-info.xml";
+    public static final String XML_PERSONS_FILE_NAME = "persons_response_info" + XML_EXTENSION;
+    public static final String XML_PERSONS_FILE = XML_PERSONS_FILE_PATH + XML_PERSONS_FILE_NAME;
 }

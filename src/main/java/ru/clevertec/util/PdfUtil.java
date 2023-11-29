@@ -23,15 +23,12 @@ import static ru.clevertec.constant.Constant.EMAIL;
 import static ru.clevertec.constant.Constant.FIRST_NAME;
 import static ru.clevertec.constant.Constant.ID;
 import static ru.clevertec.constant.Constant.LAST_NAME;
+import static ru.clevertec.constant.Constant.PDF_EXTENSION;
+import static ru.clevertec.constant.Constant.PDF_FILE_NUMBER_MAX;
 import static ru.clevertec.constant.Constant.PDF_FILE_NUMBER_PATTERN;
 import static ru.clevertec.constant.Constant.PDF_PERSON_GET_ALL_HEAD;
-import static ru.clevertec.constant.Constant.PDF_PERSON_GET_ALL_NAME;
-import static ru.clevertec.constant.Constant.PDF_PERSON_GET_ALL_PATH;
 import static ru.clevertec.constant.Constant.PDF_PERSON_GET_BY_ID_HEAD;
-import static ru.clevertec.constant.Constant.PDF_PERSON_GET_BY_ID_NAME;
-import static ru.clevertec.constant.Constant.PDF_PERSON_GET_BY_ID_PATH;
-import static ru.clevertec.constant.Constant.PDF_TEMPLATE_NAME;
-import static ru.clevertec.constant.Constant.PDF_TEMPLATE_PATH;
+import static ru.clevertec.constant.Constant.PDF_TEMPLATE;
 import static ru.clevertec.constant.Constant.PDF_TEXT_SEPARATOR;
 
 /**
@@ -42,12 +39,8 @@ public class PdfUtil {
 
     private Long fileNumber = 1L;
 
-    @SneakyThrows
-    public void createPdf(InfoPersonDto person) {
-        var pdfReader = new PdfReader(PDF_TEMPLATE_PATH + PDF_TEMPLATE_NAME);
-        var pdfWriter = new PdfWriter(PDF_PERSON_GET_BY_ID_PATH + String.format(PDF_PERSON_GET_BY_ID_NAME, getDocumentNumber()));
-        var pdfDocument = new PdfDocument(pdfReader, pdfWriter);
-        var document = new Document(pdfDocument);
+    public void createPdf(InfoPersonDto person, String fileName, boolean fileNumber) {
+        var document = new Document(getPdfDocument(fileName, fileNumber));
 
         document.add(putCell(PDF_PERSON_GET_BY_ID_HEAD, TextAlignment.CENTER));
         document.add(putCell(PDF_TEXT_SEPARATOR, TextAlignment.CENTER));
@@ -56,12 +49,8 @@ public class PdfUtil {
         document.close();
     }
 
-    @SneakyThrows
-    public void createPdf(List<InfoPersonDto> persons) {
-        var pdfReader = new PdfReader(PDF_TEMPLATE_PATH + PDF_TEMPLATE_NAME);
-        var pdfWriter = new PdfWriter(PDF_PERSON_GET_ALL_PATH + String.format(PDF_PERSON_GET_ALL_NAME, getDocumentNumber()));
-        var pdfDocument = new PdfDocument(pdfReader, pdfWriter);
-        var document = new Document(pdfDocument);
+    public void createPdf(List<InfoPersonDto> persons, String fileName, boolean fileNumber) {
+        var document = new Document(getPdfDocument(fileName, fileNumber));
 
         document.add(putCell(PDF_PERSON_GET_ALL_HEAD, TextAlignment.CENTER));
         document.add(putCell(PDF_TEXT_SEPARATOR, TextAlignment.CENTER));
@@ -72,10 +61,33 @@ public class PdfUtil {
         document.close();
     }
 
+    @SneakyThrows
+    private PdfReader getPdfReader() {
+        return new PdfReader(PDF_TEMPLATE);
+    }
+
+    @SneakyThrows
+    private PdfWriter getPdfWriter(String fileName, boolean fileNumber) {
+        return fileNumber ?
+                new PdfWriter(getDocumentNameWithNumber(fileName)) :
+                new PdfWriter(fileName);
+    }
+
+    private PdfDocument getPdfDocument(String fileName, boolean fileNumber) {
+        return new PdfDocument(getPdfReader(), getPdfWriter(fileName, fileNumber));
+    }
+
     private String getDocumentNumber() {
+        fileNumber = fileNumber > PDF_FILE_NUMBER_MAX ? 1L : fileNumber;
         String documentNumber = new DecimalFormat(PDF_FILE_NUMBER_PATTERN).format(fileNumber);
         fileNumber++;
         return documentNumber;
+    }
+
+    private String getDocumentNameWithNumber(String fileName) {
+        return new StringBuilder(fileName)
+                .insert(fileName.indexOf(PDF_EXTENSION), "-" + getDocumentNumber())
+                .toString();
     }
 
     private Table personTable(InfoPersonDto person) {

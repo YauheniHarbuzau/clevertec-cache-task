@@ -8,6 +8,9 @@ import ru.clevertec.util.PdfUtil;
 
 import java.util.List;
 
+import static ru.clevertec.constant.Constant.PDF_PERSON_GET_ALL;
+import static ru.clevertec.constant.Constant.PDF_PERSON_GET_BY_ID;
+
 /**
  * Proxy для {@link PersonService} и {@link PersonServiceImpl}
  */
@@ -22,14 +25,14 @@ public class PersonServiceProxy implements PersonService {
     @Override
     public InfoPersonDto getById(Long id) {
         var person = service.getById(id);
-        PdfUtil.createPdf(person);
+        PdfUtil.createPdf(person, PDF_PERSON_GET_BY_ID, true);
         return person;
     }
 
     @Override
     public List<InfoPersonDto> getAll() {
         var persons = service.getAll();
-        PdfUtil.createPdf(persons);
+        PdfUtil.createPdf(persons, PDF_PERSON_GET_ALL, true);
         return persons;
     }
 

@@ -1,4 +1,4 @@
-# CLEVERTEC CACHE TASK
+# CLEVERTEC TASKS (CACHE, PDF, PATTERNS)
 
 **Автор Евгений Гарбузов**
 
