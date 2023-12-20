@@ -37,6 +37,13 @@ public class PersonServiceProxy implements PersonService {
     }
 
     @Override
+    public List<InfoPersonDto> getAll(int pageSize, int pageNumber) {
+        var persons = service.getAll(pageSize, pageNumber);
+        PdfUtil.createPdf(persons, PDF_PERSON_GET_ALL, true);
+        return persons;
+    }
+
+    @Override
     public void save(PersonDto personDto) {
         service.save(personDto);
     }

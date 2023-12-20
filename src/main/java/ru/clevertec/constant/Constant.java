@@ -4,6 +4,7 @@ import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import org.hibernate.validator.messageinterpolation.ParameterMessageInterpolator;
 
+import javax.servlet.http.HttpServletResponse;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 
@@ -14,9 +15,16 @@ public class Constant {
 
     public static final String PERSON_FIND_BY_ID_SQL = "SELECT * FROM persons WHERE id=?";
     public static final String PERSON_FIND_ALL_SQL = "SELECT * FROM persons";
+    public static final String PERSON_FIND_ALL_SQL_WITH_PAGINATION = "SELECT * FROM persons LIMIT ? OFFSET ?";
     public static final String PERSON_CREATE_SQL = "INSERT INTO persons (id, first_name, last_name, email, create_date) VALUES (?, ?, ?, ?, NOW())";
     public static final String PERSON_UPDATE_SQL = "UPDATE persons SET first_name=?, last_name=?, email=? WHERE id=?";
     public static final String PERSON_DELETE_BY_ID_SQL = "DELETE FROM persons WHERE id=?";
+
+    public static final int STATUS_GET_OK = HttpServletResponse.SC_OK;
+    public static final int STATUS_SAVE_OK = HttpServletResponse.SC_CREATED;
+    public static final int STATUS_DELETE_OK = HttpServletResponse.SC_NO_CONTENT;
+    public static final int STATUS_NOT_FOUND = HttpServletResponse.SC_NOT_FOUND;
+    public static final int STATUS_BAD_REQUEST = HttpServletResponse.SC_BAD_REQUEST;
 
     public final static DateTimeFormatter OFFSET_DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSSSSSXXXXX");
     public final static ZoneOffset ZONE_OFFSET = ZoneOffset.ofHours(3);

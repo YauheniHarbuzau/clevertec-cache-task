@@ -1,8 +1,11 @@
 dataSource:
   driver: org.postgresql.Driver
-  url: jdbc:postgresql://localhost:5432/cache_task
+  url: jdbc:postgresql://localhost:5432/clevertec_task
   username: postgres
   password: root
+pagination:
+  pageSize: 20
+  pageNumber: 1
 cache:
   type: LRU
-  capacity: 3
+  capacity: 10

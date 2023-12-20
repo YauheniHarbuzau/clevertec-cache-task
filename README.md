@@ -1,4 +1,6 @@
-# CLEVERTEC TASKS (CACHE, PDF, PATTERNS)
+# CLEVERTEC TASK
+
+(CACHE, PDF, PATTERNS, SERVLETS)
 
 **Автор Евгений Гарбузов**
 
@@ -10,6 +12,8 @@
 - Gradle 8.0
 - PostgreSQL 15.2
 - PostgreSQL JDBC Driver 42.5.4
+- Liquibase 4.25.0
+- Java Servlet API 4.0.1
 - Lombok Plugin 6.5.1
 - MapStruct 1.5.5.Final
 - AspectJ 1.9.20.1
@@ -23,20 +27,17 @@
 - Mockito 5.6.0
 - AssertJ 3.24.2
 
-Для работы с приложением локально требуется Docker.
+Для работы с приложением локально требуется Docker и Apache Tomcat.
 
 Перед началом работы необходимо выполнить команду ```docker compose up```
-для создания контейнера PostgreSQL с заполненной базой данных.
-
-Точка входа в приложение - [Main-класс](src/main/java/ru/clevertec/Main.java "Main.java")
-(содержит примеры работы с приложением).
+для создания контейнера с заполненной базой данных.
 
 Реализованы алгоритмы [LRU](src/main/java/ru/clevertec/dao/cache/impl/LRUCache.java "LRUCache.java")
 и [LFU](src/main/java/ru/clevertec/dao/cache/impl/LFUCache.java "LFUCache.java")
 для кеширования данных.
 
 Реализована валидация данных на [контролере](src/main/java/ru/clevertec/controller/PersonController.java "PersonController.java")
-при выполнении метода сохранения.
+при выполнении POST-метода (сохранение Пользователя).
 
 Предусмотрена генерация pdf-файлов при получении Пользователя по ID
 ([см. пример](src/main/resources/pdfexample/person_get_by_id_example.pdf "person_get_by_id_example.pdf")) и
@@ -44,79 +45,27 @@
 
 ***
 
-### Методы [контролера](src/main/java/ru/clevertec/controller/PersonController.java "PersonController.java") для работы с приложением
+### Примеры [HTTP-запросов](src/main/resources/http/person.http "person.http") для работы с приложением
 
-#### - Получение Пользователя по ID (метод и пример вывода результата в консоль)
+#### - GET
 
-```java
-public String getById(Long id){...}
-```
+Получение Пользователя по ID:</br>
+http://localhost:8080/clevertec-cache-task/persons?id=1
 
-```
-{
-  "id": 1,
-  "firstName": "Ivan",
-  "lastName": "Ivanov",
-  "email": "ivanov@gmail.com"
-  "createDate": "2023-11-17T12:34:20.131553000+03:00"
-}
-```
+Получение всех Пользователей с пагинацией по умолчанию:</br>
+http://localhost:8080/clevertec-cache-task/persons
 
-#### - Получение всех Пользователей (метод и пример вывода результата в консоль)
+Получение всех Пользователей с задаваемой пагинацией:</br>
+http://localhost:8080/clevertec-cache-task/persons?pageSize=10&pageNumber=1
 
-```java
-public String getAll(){...}
-```
+#### - POST
 
-```
-[
-  {
-    "id": 1,
-    "firstName": "Ivan",
-    "lastName": "Ivanov",
-    "email": "ivanov@gmail.com"
-    "createDate": "2023-11-17T12:34:20.131553000+03:00"
-  },
-  {
-    "id": 2,
-    "firstName": "Petr",
-    "lastName": "Petrov",
-    "email": "petrov@gmail.com"
-    "createDate": "2023-11-17T12:34:20.131553000+03:00"
-  }
-]
-```
+Сохранение (создание или обновление) Пользователя:</br>
+http://localhost:8080/clevertec-cache-task/persons?id=100&firstName=Ivan&lastName=Ivanov&email=ivan@gmail.com
 
-#### - Сохранение (создание или обновление) Пользователя (метод и пример вывода результата в консоль)
+#### - DELETE
 
-```java
-public String save(String personDtoJson){...}
-```
-
-При валидных данных:
-
-```
-Saved successfully: PersonDto(id=100, firstName=Ivan, lastName=Ivanov, email=ivanov@gmail.com)
-```
-
-При невалидных данных:
-
-```
-property: id, value: null, message: ID cannot be null
-property: firstName, value: IvanAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, message: Invalid first name
-property: lastName, value: IvanovAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA, message: Invalid last name
-property: email, value: ivanovgmailcom, message: Invalid email
-Invalid Person DTO
-```
-
-#### - Удаление Пользователя по ID (метод и пример вывода результата в консоль)
-
-```java
-public String deleteById(Long id){...}
-```
-
-```
-Deleted by ID 1 successfully
-```
+Удаление Пользователя по ID:</br>
+http://localhost:8080/clevertec-cache-task/persons?id=100
 
 ***

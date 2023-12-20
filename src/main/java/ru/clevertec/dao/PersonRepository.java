@@ -14,6 +14,8 @@ public interface PersonRepository {
 
     List<Person> findAll();
 
+    List<Person> findAll(int pageSize, int pageNumber);
+
     Person create(Person person);
 
     Person update(Person person);

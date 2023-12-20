@@ -8,9 +8,8 @@ import lombok.Setter;
  */
 @Getter
 @Setter
-public class Property {
+public class Pagination {
 
-    private DataSource dataSource;
-    private Pagination pagination;
-    private Cache cache;
+    private int pageSize;
+    private int pageNumber;
 }

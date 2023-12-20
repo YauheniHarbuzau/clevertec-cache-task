@@ -14,6 +14,8 @@ public interface PersonService {
 
     List<InfoPersonDto> getAll();
 
+    List<InfoPersonDto> getAll(int pageSize, int pageNumber);
+
     void save(PersonDto personDto);
 
     void deleteById(Long id);
