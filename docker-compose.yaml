@@ -1,5 +1,7 @@
 version: "3.9"
+
 services:
+
   postgres:
     image: postgres:15.2
     restart: always
@@ -7,8 +9,29 @@ services:
       - DATABASE_HOST=127.0.0.1
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=root
-      - POSTGRES_DB=cache_task
+      - POSTGRES_DB=clevertec_task
     ports:
       - "5432:5432"
+    healthcheck:
+      test: [ "CMD-SHELL", "psql postgresql://postgres@:5432/clevertec_task -c 'select 1;'" ]
+      interval: 10s
+      timeout: 5s
+      retries: 20
+
+  liquibase:
+    image: liquibase/liquibase:4.17.2
+    depends_on:
+      postgres:
+        condition: service_healthy
     volumes:
-      - ./docker_postgres_init.sql:/docker-entrypoint-initdb.d/docker_postgres_init.sql
+      - ./database/:/database/
+    command: >
+      liquibase
+        --logLevel=INFO
+        --classpath=/database/
+        --changeLogFile=changelog.xml
+        --driver=org.postgresql.Driver
+        --url=jdbc:postgresql://postgres:5432/clevertec_task
+        --username=postgres
+        --password=root
+      update

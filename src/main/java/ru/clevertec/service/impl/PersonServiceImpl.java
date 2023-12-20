@@ -9,6 +9,7 @@ import ru.clevertec.service.dto.InfoPersonDto;
 import ru.clevertec.service.dto.PersonDto;
 import ru.clevertec.service.mapper.PersonMapper;
 import ru.clevertec.service.mapper.PersonMapperImpl;
+import ru.clevertec.util.YamlUtil;
 
 import java.util.List;
 
@@ -39,13 +40,31 @@ public class PersonServiceImpl implements PersonService {
     }
 
     /**
-     * Получение всех Пользователей
+     * Получение всех Пользователей с пагинацией по умолчанию
      *
      * @return список DTO Пользователей
      */
     @Override
     public List<InfoPersonDto> getAll() {
-        return repository.findAll()
+        var pageSize = YamlUtil.getProperties().getPagination().getPageSize();
+        var pageNumber = YamlUtil.getProperties().getPagination().getPageNumber();
+
+        return repository.findAll(pageSize, pageNumber)
+                .stream()
+                .map(mapper::toInfoPersonDto)
+                .toList();
+    }
+
+    /**
+     * Получение всех Пользователей с задаваемой пагинацией
+     *
+     * @param pageSize   количество элементов на странице
+     * @param pageNumber номер страницы
+     * @return список DTO Пользователей
+     */
+    @Override
+    public List<InfoPersonDto> getAll(int pageSize, int pageNumber) {
+        return repository.findAll(pageSize, pageNumber)
                 .stream()
                 .map(mapper::toInfoPersonDto)
                 .toList();
@@ -76,7 +95,7 @@ public class PersonServiceImpl implements PersonService {
      */
     @Override
     public void save(PersonDto personDto) {
-        var ids = getAll().stream().map(InfoPersonDto::getId).toList();
+        var ids = repository.findAll().stream().map(Person::getId).toList();
 
         if (ids.contains(personDto.getId())) {
             update(personDto);

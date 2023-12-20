@@ -14,6 +14,7 @@ import java.util.Optional;
 import static ru.clevertec.constant.Constant.PERSON_CREATE_SQL;
 import static ru.clevertec.constant.Constant.PERSON_DELETE_BY_ID_SQL;
 import static ru.clevertec.constant.Constant.PERSON_FIND_ALL_SQL;
+import static ru.clevertec.constant.Constant.PERSON_FIND_ALL_SQL_WITH_PAGINATION;
 import static ru.clevertec.constant.Constant.PERSON_FIND_BY_ID_SQL;
 import static ru.clevertec.constant.Constant.PERSON_UPDATE_SQL;
 
@@ -66,6 +67,37 @@ public class PersonRepositoryImpl implements PersonRepository {
             List<Person> persons = new ArrayList<>(0);
 
             var resultSet = statement.executeQuery(PERSON_FIND_ALL_SQL);
+            while (resultSet.next()) {
+                persons.add(Person.builder()
+                        .id(resultSet.getLong("id"))
+                        .firstName(resultSet.getString("first_name"))
+                        .lastName(resultSet.getString("last_name"))
+                        .email(resultSet.getString("email"))
+                        .createDate(DateUtil.getOffsetDateTime(resultSet.getTimestamp("create_date")))
+                        .build());
+            }
+            return persons;
+        } catch (SQLException ex) {
+            throw new RuntimeException(ex);
+        }
+    }
+
+    /**
+     * Получение всех Пользователей с пагинацией
+     *
+     * @param pageSize   количество элементов на странице
+     * @param pageNumber номер страницы
+     * @return список Пользователей
+     */
+    @Override
+    public List<Person> findAll(int pageSize, int pageNumber) {
+        try (var preparedStatement = connection.prepareStatement(PERSON_FIND_ALL_SQL_WITH_PAGINATION)) {
+            List<Person> persons = new ArrayList<>(0);
+
+            preparedStatement.setInt(1, pageSize);
+            preparedStatement.setInt(2, (pageNumber - 1) * pageSize);
+
+            var resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 persons.add(Person.builder()
                         .id(resultSet.getLong("id"))
