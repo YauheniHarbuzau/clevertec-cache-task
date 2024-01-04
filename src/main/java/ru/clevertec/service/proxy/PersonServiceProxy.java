@@ -1,5 +1,8 @@
 package ru.clevertec.service.proxy;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 import ru.clevertec.service.PersonService;
 import ru.clevertec.service.dto.InfoPersonDto;
 import ru.clevertec.service.dto.PersonDto;
@@ -14,32 +17,34 @@ import static ru.clevertec.constant.Constant.PDF_PERSON_GET_BY_ID;
 /**
  * Proxy для {@link PersonService} и {@link PersonServiceImpl}
  */
+@Component
 public class PersonServiceProxy implements PersonService {
 
     private final PersonService service;
 
-    public PersonServiceProxy(PersonService service) {
+    @Autowired
+    public PersonServiceProxy(@Qualifier("personServiceImpl") PersonService service) {
         this.service = service;
     }
 
     @Override
     public InfoPersonDto getById(Long id) {
         var person = service.getById(id);
-        PdfUtil.createPdf(person, PDF_PERSON_GET_BY_ID, true);
+        // PdfUtil.createPdf(person, PDF_PERSON_GET_BY_ID, true);
         return person;
     }
 
     @Override
     public List<InfoPersonDto> getAll() {
         var persons = service.getAll();
-        PdfUtil.createPdf(persons, PDF_PERSON_GET_ALL, true);
+        // PdfUtil.createPdf(persons, PDF_PERSON_GET_ALL, true);
         return persons;
     }
 
     @Override
     public List<InfoPersonDto> getAll(int pageSize, int pageNumber) {
         var persons = service.getAll(pageSize, pageNumber);
-        PdfUtil.createPdf(persons, PDF_PERSON_GET_ALL, true);
+        // PdfUtil.createPdf(persons, PDF_PERSON_GET_ALL, true);
         return persons;
     }
 

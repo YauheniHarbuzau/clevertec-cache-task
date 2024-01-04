@@ -1,14 +1,14 @@
 ### Person - Get By Id
-GET http://localhost:8080/clevertec-cache-task/persons?id=1
+GET http://localhost:8080/clevertec-cache-task/persons/1
 
 ### Person - Get All With Default Pagination
 GET http://localhost:8080/clevertec-cache-task/persons
 
 ### Person - Get All With Custom Pagination
-GET http://localhost:8080/clevertec-cache-task/persons?pageSize=10&pageNumber=1
+GET http://localhost:8080/clevertec-cache-task/persons/10/1
 
 ### Person - Save
-POST http://localhost:8080/clevertec-cache-task/persons?id=100&firstName=Ivan&lastName=Ivanov&email=ivan@gmail.com
+POST http://localhost:8080/clevertec-cache-task/persons/100/Ivan/Ivanov/ivan@gmail.com
 
 ### Person - Delete By Id
-DELETE http://localhost:8080/clevertec-cache-task/persons?id=100
+DELETE http://localhost:8080/clevertec-cache-task/persons/100

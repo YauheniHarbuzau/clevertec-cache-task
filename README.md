@@ -1,6 +1,6 @@
 # CLEVERTEC TASK
 
-(CACHE, PDF, PATTERNS, SERVLETS)
+(CACHE, PDF, PATTERNS, SERVLETS, SPRING CORE)
 
 **Автор Евгений Гарбузов**
 
@@ -50,22 +50,22 @@
 #### - GET
 
 Получение Пользователя по ID:</br>
-http://localhost:8080/clevertec-cache-task/persons?id=1
+http://localhost:8080/clevertec-cache-task/persons/1
 
 Получение всех Пользователей с пагинацией по умолчанию:</br>
 http://localhost:8080/clevertec-cache-task/persons
 
 Получение всех Пользователей с задаваемой пагинацией:</br>
-http://localhost:8080/clevertec-cache-task/persons?pageSize=10&pageNumber=1
+http://localhost:8080/clevertec-cache-task/persons/10/1
 
 #### - POST
 
 Сохранение (создание или обновление) Пользователя:</br>
-http://localhost:8080/clevertec-cache-task/persons?id=100&firstName=Ivan&lastName=Ivanov&email=ivan@gmail.com
+http://localhost:8080/clevertec-cache-task/persons/100/Ivan/Ivanov/ivan@gmail.com
 
 #### - DELETE
 
 Удаление Пользователя по ID:</br>
-http://localhost:8080/clevertec-cache-task/persons?id=100
+http://localhost:8080/clevertec-cache-task/persons/100
 
 ***

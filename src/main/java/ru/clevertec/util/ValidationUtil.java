@@ -1,9 +1,9 @@
 package ru.clevertec.util;
 
-import jakarta.validation.ConstraintViolation;
 import lombok.experimental.UtilityClass;
 import ru.clevertec.service.dto.PersonDto;
 
+import javax.validation.ConstraintViolation;
 import java.util.Set;
 
 import static ru.clevertec.constant.Constant.VALIDATOR;
@@ -25,10 +25,10 @@ public class ValidationUtil {
 
             StringBuilder stringBuilder = new StringBuilder("property: ");
             stringBuilder.append(constr.getPropertyPath())
-                         .append(", value: ")
-                         .append(constr.getInvalidValue())
-                         .append(", message: ")
-                         .append(constr.getMessage());
+                    .append(", value: ")
+                    .append(constr.getInvalidValue())
+                    .append(", message: ")
+                    .append(constr.getMessage());
 
             System.out.println(stringBuilder);
         }

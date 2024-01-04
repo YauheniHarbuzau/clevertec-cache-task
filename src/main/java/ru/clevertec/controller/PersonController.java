@@ -2,18 +2,20 @@ package ru.clevertec.controller;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import ru.clevertec.controller.adapter.OffsetDateTimeAdapter;
 import ru.clevertec.service.PersonService;
 import ru.clevertec.service.dto.PersonDto;
-import ru.clevertec.service.impl.PersonServiceImpl;
-import ru.clevertec.service.proxy.PersonServiceProxy;
 import ru.clevertec.util.ValidationUtil;
 
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.time.OffsetDateTime;
 
 import static ru.clevertec.constant.Constant.STATUS_BAD_REQUEST;
@@ -25,15 +27,16 @@ import static ru.clevertec.constant.Constant.STATUS_SAVE_OK;
 /**
  * Контроллер для работы с Пользователями (Person)
  */
-@WebServlet(value = "/persons")
-public class PersonController extends HttpServlet {
+@RestController
+@RequestMapping("/persons")
+public class PersonController {
 
-    private PersonService service;
-    private Gson gson;
+    private final PersonService service;
+    private final Gson gson;
 
-    @Override
-    public void init() {
-        this.service = new PersonServiceProxy(new PersonServiceImpl());
+    @Autowired
+    public PersonController(@Qualifier("personServiceProxy") PersonService service) {
+        this.service = service;
         this.gson = new GsonBuilder()
                 .serializeNulls()
                 .registerTypeAdapter(OffsetDateTime.class, new OffsetDateTimeAdapter())
@@ -41,88 +44,64 @@ public class PersonController extends HttpServlet {
                 .create();
     }
 
-    @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        var id = request.getParameter("id");
-        var pageSize = request.getParameter("pageSize");
-        var pageNumber = request.getParameter("pageNumber");
-
-        if (id != null) {
-            getById(response, id);
-        } else if (pageSize != null && pageNumber != null) {
-            getAll(response, pageSize, pageNumber);
-        } else {
-            getAll(response);
-        }
-    }
-
-    private void getById(HttpServletResponse response, String id) throws IOException {
+    @GetMapping("/{id}")
+    public ResponseEntity<String> getById(@PathVariable("id") Long id) {
         try {
-            var request = gson.toJson(service.getById(Long.parseLong(id)));
-            answerFromServer(response, STATUS_GET_OK, request);
+            var person = service.getById(id);
+            return new ResponseEntity<>(gson.toJson(person), STATUS_GET_OK);
         } catch (Exception ex) {
-            answerFromServer(response, STATUS_NOT_FOUND, ex.getMessage());
+            return new ResponseEntity<>(STATUS_NOT_FOUND);
         }
     }
 
-    private void getAll(HttpServletResponse response) throws IOException {
+    @GetMapping("")
+    public ResponseEntity<String> getAll() {
         try {
-            var request = gson.toJson(service.getAll());
-            answerFromServer(response, STATUS_GET_OK, request);
+            var persons = service.getAll();
+            return new ResponseEntity<>(gson.toJson(persons), STATUS_GET_OK);
         } catch (Exception ex) {
-            answerFromServer(response, STATUS_NOT_FOUND, ex.getMessage());
+            return new ResponseEntity<>(STATUS_NOT_FOUND);
         }
     }
 
-    private void getAll(HttpServletResponse response, String pageSize, String pageNumber) throws IOException {
+    @GetMapping("/{pageSize}/{pageNumber}")
+    public ResponseEntity<String> getAll(@PathVariable("pageSize") int pageSize, @PathVariable("pageNumber") int pageNumber) {
         try {
-            var request = gson.toJson(service.getAll(Integer.parseInt(pageSize), Integer.parseInt(pageNumber)));
-            answerFromServer(response, STATUS_GET_OK, request);
+            var persons = service.getAll(pageSize, pageNumber);
+            return new ResponseEntity<>(gson.toJson(persons), STATUS_GET_OK);
         } catch (Exception ex) {
-            answerFromServer(response, STATUS_NOT_FOUND, ex.getMessage());
+            return new ResponseEntity<>(STATUS_NOT_FOUND);
         }
     }
 
-    @Override
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    @PostMapping("/{id}/{firstName}/{lastName}/{email}")
+    public ResponseEntity<String> save(@PathVariable("id") Long id, @PathVariable("firstName") String firstName, @PathVariable("lastName") String lastName, @PathVariable("email") String email) {
         var personToSave = PersonDto.builder()
-                .id(Long.parseLong(request.getParameter("id")))
-                .firstName(request.getParameter("firstName"))
-                .lastName(request.getParameter("lastName"))
-                .email(request.getParameter("email"))
+                .id(id)
+                .firstName(firstName)
+                .lastName(lastName)
+                .email(email)
                 .build();
 
-        if (!ValidationUtil.isValid(personToSave)) {
-            answerFromServer(response, STATUS_BAD_REQUEST, "Invalid Person DTO");
+        if (ValidationUtil.isValid(personToSave)) {
+            try {
+                service.save(personToSave);
+                return new ResponseEntity<>(gson.toJson(personToSave), STATUS_SAVE_OK);
+            } catch (Exception ex) {
+                return new ResponseEntity<>(STATUS_BAD_REQUEST);
+            }
         } else {
-            save(response, personToSave);
+            return new ResponseEntity<>(STATUS_BAD_REQUEST);
         }
     }
 
-    private void save(HttpServletResponse response, PersonDto personToSave) throws IOException {
+    @DeleteMapping("/{id}")
+    public ResponseEntity<String> deleteById(@PathVariable("id") Long id) {
         try {
-            service.save(personToSave);
-            answerFromServer(response, STATUS_SAVE_OK, "Saved Successfully\n" + gson.toJson(personToSave));
+            service.deleteById(id);
+            return new ResponseEntity<>(STATUS_DELETE_OK);
         } catch (Exception ex) {
-            answerFromServer(response, STATUS_BAD_REQUEST, ex.getMessage());
+            return new ResponseEntity<>(STATUS_BAD_REQUEST);
         }
-    }
-
-    @Override
-    public void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        var idToDelete = request.getParameter("id");
-
-        try {
-            service.deleteById(Long.parseLong(idToDelete));
-            answerFromServer(response, STATUS_DELETE_OK, "Deleted By ID " + idToDelete + " Successfully");
-        } catch (Exception ex) {
-            answerFromServer(response, STATUS_BAD_REQUEST, ex.getMessage());
-        }
-    }
-
-    private void answerFromServer(HttpServletResponse response, int status, String request) throws IOException {
-        response.setStatus(status);
-        response.setHeader("Content-Type", "application/json");
-        response.getOutputStream().println(request);
     }
 }
