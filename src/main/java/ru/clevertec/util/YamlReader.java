@@ -1,16 +1,16 @@
 package ru.clevertec.util;
 
-import lombok.experimental.UtilityClass;
+import org.springframework.stereotype.Component;
 import org.yaml.snakeyaml.LoaderOptions;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
 import ru.clevertec.util.property.Property;
 
 /**
- * Утилитарный класс для чтения конфигурационного yaml-файла
+ * Класс для чтения конфигурационного yaml-файла
  */
-@UtilityClass
-public class YamlUtil {
+@Component
+public class YamlReader {
 
     public Property getProperties() {
         var inputStream = Property.class.getClassLoader().getResourceAsStream("application.yaml");

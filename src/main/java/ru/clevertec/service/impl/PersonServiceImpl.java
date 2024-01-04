@@ -1,29 +1,34 @@
 package ru.clevertec.service.impl;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
 import ru.clevertec.dao.PersonRepository;
 import ru.clevertec.dao.entity.Person;
-import ru.clevertec.dao.impl.PersonRepositoryImpl;
 import ru.clevertec.exception.EntityNotFoundException;
 import ru.clevertec.service.PersonService;
 import ru.clevertec.service.dto.InfoPersonDto;
 import ru.clevertec.service.dto.PersonDto;
 import ru.clevertec.service.mapper.PersonMapper;
-import ru.clevertec.service.mapper.PersonMapperImpl;
-import ru.clevertec.util.YamlUtil;
+import ru.clevertec.util.YamlReader;
 
 import java.util.List;
 
 /**
  * Имплементация сервиса для работы с Person
  */
+@Component
 public class PersonServiceImpl implements PersonService {
 
     private final PersonRepository repository;
     private final PersonMapper mapper;
+    private final YamlReader yamlReader;
 
-    public PersonServiceImpl() {
-        this.repository = new PersonRepositoryImpl();
-        this.mapper = new PersonMapperImpl();
+    @Autowired
+    public PersonServiceImpl(@Qualifier("personRepositoryProxy") PersonRepository repository, PersonMapper mapper, YamlReader yamlReader) {
+        this.repository = repository;
+        this.mapper = mapper;
+        this.yamlReader = yamlReader;
     }
 
     /**
@@ -46,8 +51,8 @@ public class PersonServiceImpl implements PersonService {
      */
     @Override
     public List<InfoPersonDto> getAll() {
-        var pageSize = YamlUtil.getProperties().getPagination().getPageSize();
-        var pageNumber = YamlUtil.getProperties().getPagination().getPageNumber();
+        var pageSize = yamlReader.getProperties().getPagination().getPageSize();
+        var pageNumber = yamlReader.getProperties().getPagination().getPageNumber();
 
         return repository.findAll(pageSize, pageNumber)
                 .stream()
